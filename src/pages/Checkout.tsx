@@ -38,7 +38,13 @@ export const Checkout = () => {
 
   const handlePlaceBets = async () => {
     try {
-      await placeBets(betSlips);
+      // Ensure all bet slips have a stake value
+      const validatedBetSlips = betSlips.map((slip) => ({
+        ...slip,
+        stake: slip.stake || 1,
+      }));
+
+      await placeBets(validatedBetSlips);
       clearBetSlips();
       alert("Bets placed successfully!");
       navigate("/dashboard");

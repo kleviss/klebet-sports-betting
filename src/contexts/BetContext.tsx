@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useState } from "react";
+import * as React from "react";
+import { createContext, useContext, useState } from "react";
+import type { BetSlip } from "./BetSlipContext";
 
-interface Bet {
+export interface Bet {
   id: string;
   gameId: string;
   homeTeam: string;
@@ -13,7 +15,9 @@ interface Bet {
 
 interface BetContextType {
   bets: Bet[];
-  placeBets: (bets: Bet[]) => Promise<void>;
+  placeBets: (bets: BetSlip[]) => Promise<void>;
+  removeBet: (id: string) => void;
+  clearBets: () => void;
 }
 
 const BetContext = createContext<BetContextType | undefined>(undefined);
@@ -21,12 +25,31 @@ const BetContext = createContext<BetContextType | undefined>(undefined);
 export const BetProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [bets, setBets] = useState<Bet[]>([]);
 
-  const placeBets = async (newBets: Bet[]) => {
-    // In a real app, this would make an API call
+  const placeBets = async (betSlips: BetSlip[]) => {
+    // Convert BetSlip to Bet
+    const newBets: Bet[] = betSlips.map((slip) => ({
+      id: slip.id,
+      gameId: slip.gameId,
+      homeTeam: slip.homeTeam,
+      awayTeam: slip.awayTeam,
+      selectedTeam: slip.selectedTeam,
+      odds: slip.odds,
+      stake: slip.stake || 1,
+      status: "Pending",
+    }));
+
     setBets((prevBets) => [...prevBets, ...newBets]);
   };
 
-  return <BetContext.Provider value={{ bets, placeBets }}>{children}</BetContext.Provider>;
+  const removeBet = (id: string) => {
+    setBets((prevBets) => prevBets.filter((bet) => bet.id !== id));
+  };
+
+  const clearBets = () => {
+    setBets([]);
+  };
+
+  return <BetContext.Provider value={{ bets, placeBets, removeBet, clearBets }}>{children}</BetContext.Provider>;
 };
 
 export const useBets = () => {
