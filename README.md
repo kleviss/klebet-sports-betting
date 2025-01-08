@@ -2,7 +2,7 @@
 
 A sleek and modern sports betting platform built with React, TypeScript, and Material-UI. Features real-time odds updates, user authentication, and a seamless betting experience.
 
-�� [Live Demo](https://klebet.onrender.com)
+👀 [Live Demo](https://klebet-sports-betting.onrender.com)
 
 ## Features
 
