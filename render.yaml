@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: klebet
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview
+    envVars:
+      - key: NODE_VERSION
+        value: 18.0.0
+    autoDeploy: true
+    branch: main
+    plan: free
+    region: frankfurt
+    healthCheckPath: /
+    pullRequestPreviewsEnabled: true 
